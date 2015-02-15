@@ -30,7 +30,6 @@ if use_color
     c=uint8(zeros(3,num_facet));
 end
 
-h = waitbar(0,'Please wait...');
 for i=1:num_facet,
     norm=fread(fid,3,'float32'); % normal coordinates, ignored for now
     ver1=fread(fid,3,'float32'); % vertex 1
@@ -46,14 +45,10 @@ for i=1:num_facet,
     x(:,i)=[ver1(1); ver2(1); ver3(1)]; % convert to matlab "patch" compatible format
     y(:,i)=[ver1(2); ver2(2); ver3(2)];
     z(:,i)=[ver1(3); ver2(3); ver3(3)];
-    if mod(i,floor(num_facet/10))==0
-        waitbar(i/num_facet,h);
-    end
 end
 if use_color
     varargout(1)={c};
 end
 fclose(fid);
-close(h);
 
 % For more information http://rpdrc.ic.polyu.edu.hk/old_files/stl_binary_format.htm
