@@ -1,4 +1,4 @@
-function [x, y, z, varargout] = stlread(filename)
+function [vertices, faces, varargout] = stlread(filename)
 % This function reads an STL file in binary format into matrixes X, Y and
 % Z, and C.  C is optional and contains color rgb data in 5 bits.  
 %
@@ -6,15 +6,15 @@ function [x, y, z, varargout] = stlread(filename)
 %
 % To plot use patch(x,y,z,c), or patch(x,y,z)
 %
-% Written by Doron Harlev
-
+% MATLAB code by Doron Harlev
+% Octave edits by John Moosemiller
 if nargout>4
     error('Too many output arguments')
 end
 use_color=(nargout==4);
 
 fid=fopen(filename, 'r'); %Open the file, assumes STL Binary format.
-if fid == false 
+if fid == -1 
     error('File could not be opened, check name or path.')
 end
 
@@ -42,9 +42,15 @@ for i=1:num_facet,
         b=bitand(2^6-1, col);
         c(:,i)=[r; g; b];
     end
-    x(:,i)=[ver1(1); ver2(1); ver3(1)]; % convert to matlab "patch" compatible format
-    y(:,i)=[ver1(2); ver2(2); ver3(2)];
-    z(:,i)=[ver1(3); ver2(3); ver3(3)];
+    vertices((3*i-2) , :) = [ver1(1),ver1(2),ver1(3)];
+    vertices(3*i-1 , :) = [ver2(1),ver2(2),ver2(3)];
+    vertices(3*i , :) = [ver3(1),ver3(2),ver3(3)];
+    
+    faces(i, :) = [3*i-2,3*i-1,3*i]
+    
+   % x(:,i)=[ver1(1); ver2(1); ver3(1)]; % convert to matlab "patch" compatible format
+   % y(:,i)=[ver1(2); ver2(2); ver3(2)];
+   % z(:,i)=[ver1(3); ver2(3); ver3(3)];
 end
 if use_color
     varargout(1)={c};
@@ -52,3 +58,4 @@ end
 fclose(fid);
 
 % For more information http://rpdrc.ic.polyu.edu.hk/old_files/stl_binary_format.htm
+
