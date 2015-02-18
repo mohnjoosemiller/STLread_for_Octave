@@ -5,6 +5,8 @@ function [vertices, faces, color] = stlread(filename)
 % MATLAB code by Doron Harlev
 % Octave edits by John Moosemiller
 
+read_norm = 0; % whether we want to read the face normals
+
 % Process arguments {{{
 if nargout > 3
     error('Too many output arguments');
@@ -35,33 +37,18 @@ end
 % Read in packed data for each face {{{
 coord_sz = 3*32/8; % [bytes] size of single vertex coordinate '3*float32'
 color_sz = 1*16/8; % [bytes] size of color data: '1*uint16'
-block_sz = 4 * coord_sz + color_sz; % [bytes] 3*float32 + 1 uint16
+block_sz = 4*coord_sz + color_sz; % [bytes] 4 coords (norm, v1, v2, v3) + 1 color data
 
 fid_coord_offset = ftell( fid );
-% Read norm of the face {{{
+% Read norm of the face [1*coord_sz] {{{
 % at fid_coord_offset + 0
 start_offset = 0;
-norm = fread( fid, [3, num_facet], '3*float32', block_sz - coord_sz );
-start_offset = start_offset + coord_sz;% }}}
-% Read first vertex of each face {{{
-fseek( fid, fid_coord_offset + start_offset );
-ver1 = fread( fid, [3, num_facet], '3*float32', block_sz - coord_sz );
-start_offset = start_offset + coord_sz;% }}}
-% Read second vertex of each face {{{
-fseek( fid, fid_coord_offset + start_offset );
-ver2 = fread( fid, [3, num_facet], '3*float32', block_sz - coord_sz );
-start_offset = start_offset + coord_sz;% }}}
-% Read third vertex of each face {{{
-fseek( fid, fid_coord_offset + start_offset );
-ver3 = fread( fid, [3, num_facet], '3*float32', block_sz - coord_sz );
-start_offset = start_offset + coord_sz;% }}}
-% Read the color of each face {{{
-fseek( fid, fid_coord_offset + start_offset );
-col  = fread( fid, num_facet, '1*uint16', block_sz - color_sz );% }}}
-% }}}
-
-% Reshape data into faces and vertices {{{
-% columns are each face {{{
+if read_norm
+	norm = fread( fid, [3, num_facet], '3*float32', block_sz - coord_sz );
+end
+start_offset = start_offset + 1*coord_sz;% }}}
+% Read all 3 vertices of each face [3*coord_sz] {{{
+% Each column is the 3 vertices with 3 coords each for each face
 % face_vertices =
 %       f1_v_1x  f2_v_1x ... fN_v_1x
 %       f1_v_1y  f2_v_1y ... fN_v_1y
@@ -72,8 +59,18 @@ col  = fread( fid, num_facet, '1*uint16', block_sz - color_sz );% }}}
 %       f1_v_3x  f2_v_3x ... fN_v_3x
 %       f1_v_3y  f2_v_3y ... fN_v_3y
 %       f1_v_3z  f2_v_3z ... fN_v_3z
-face_vertices = vertcat( ver1, ver2, ver3 );% }}}
-% interleave vertices% {{{
+fseek( fid, fid_coord_offset + start_offset );
+face_vertices = fread( fid, [3*3, num_facet], '9*float32', block_sz - 3*coord_sz );
+start_offset = start_offset + 3*coord_sz;% }}}
+% Read the color of each face [1*color_sz] {{{
+if use_color
+	fseek( fid, fid_coord_offset + start_offset );
+	col  = fread( fid, num_facet, '1*uint16', block_sz - 1*color_sz );% }}}
+end
+% }}}
+
+% Reshape data into faces and vertices {{{
+% interleave vertices {{{
 % so that we get
 % vertices =
 %        f1_v_1x f1_v_1y f1_v_1z
