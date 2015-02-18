@@ -39,10 +39,11 @@ coord_sz = 3*32/8; % [bytes] size of vertex coordinates (x,y,z) '3*float32'
 color_sz = 1*16/8; % [bytes] size of color data: '1*uint16'
 block_sz = 4*coord_sz + color_sz; % [bytes] 4 coords (norm, v1, v2, v3) + 1 color data
 
-fid_coord_offset = ftell( fid );
+% get the start of where the face data is in the file
+fid_face_data_start = ftell( fid );
+
 % Read norm of the face [1*coord_sz] {{{
-% at fid_coord_offset + 0
-start_offset = 0;
+start_offset = 0; % at fid_face_data_start + 0
 if read_norm
 	norm = fread( fid, [3, num_facet], '3*float32', block_sz - coord_sz );
 end
@@ -59,12 +60,12 @@ start_offset = start_offset + 1*coord_sz;% }}}
 %       f1_v_3x  f2_v_3x ... fN_v_3x
 %       f1_v_3y  f2_v_3y ... fN_v_3y
 %       f1_v_3z  f2_v_3z ... fN_v_3z
-fseek( fid, fid_coord_offset + start_offset );
+fseek( fid, fid_face_data_start + start_offset );
 face_vertices = fread( fid, [3*3, num_facet], '9*float32', block_sz - 3*coord_sz );
 start_offset = start_offset + 3*coord_sz;% }}}
 % Read the color of each face [1*color_sz] {{{
 if use_color
-	fseek( fid, fid_coord_offset + start_offset );
+	fseek( fid, fid_face_data_start + start_offset );
 	col  = fread( fid, num_facet, '1*uint16', block_sz - 1*color_sz );% }}}
 end
 % }}}
