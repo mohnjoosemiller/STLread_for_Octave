@@ -32,7 +32,7 @@ if use_color
     c=uint8(zeros(3,num_facet));
 end
 
-for i=1:num_facet,
+for i=1:num_facet
     norm=fread(fid,3,'float32'); % normal coordinates, ignored for now
     ver1=fread(fid,3,'float32'); % vertex 1
     ver2=fread(fid,3,'float32'); % vertex 2
