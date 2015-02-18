@@ -35,7 +35,7 @@ end
 % }}}
 
 % Read in packed data for each face {{{
-coord_sz = 3*32/8; % [bytes] size of single vertex coordinate '3*float32'
+coord_sz = 3*32/8; % [bytes] size of vertex coordinates (x,y,z) '3*float32'
 color_sz = 1*16/8; % [bytes] size of color data: '1*uint16'
 block_sz = 4*coord_sz + color_sz; % [bytes] 4 coords (norm, v1, v2, v3) + 1 color data
 
