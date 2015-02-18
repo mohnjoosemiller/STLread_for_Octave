@@ -19,5 +19,5 @@ Retrieving the vertices and faces is easy
 In order to plot these you might follow with
 
 ```matlab
-patch(vertices, faces);
+patch( "Faces", faces, "Vertices", verticies );
 ```
