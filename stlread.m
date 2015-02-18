@@ -1,4 +1,4 @@
-function [vertices, faces, varargout] = stlread(filename)
+function [vertices, faces] = stlread(filename)
 % This function reads an STL file in binary format into matrixes X, Y and
 % Z, and C.  C is optional and contains color rgb data in 5 bits.  
 %
@@ -25,7 +25,9 @@ fprintf('\nTitle: %s\n', char(ftitle'));
 fprintf('Num Facets: %d\n', num_facet);
 
 % Preallocate memory to save running time
-x=zeros(3,num_facet); y=zeros(3,num_facet); z=zeros(3,num_facet);
+vertices = zeros(3*num_facet,3);
+faces = zeros(num_facet,3);
+
 if use_color
     c=uint8(zeros(3,num_facet));
 end
@@ -46,7 +48,7 @@ for i=1:num_facet,
     vertices(3*i-1 , :) = [ver2(1),ver2(2),ver2(3)];
     vertices(3*i , :) = [ver3(1),ver3(2),ver3(3)];
     
-    faces(i, :) = [3*i-2,3*i-1,3*i]
+    faces(i, :) = [3*i-2,3*i-1,3*i];
     
    % x(:,i)=[ver1(1); ver2(1); ver3(1)]; % convert to matlab "patch" compatible format
    % y(:,i)=[ver1(2); ver2(2); ver3(2)];
@@ -58,4 +60,3 @@ end
 fclose(fid);
 
 % For more information http://rpdrc.ic.polyu.edu.hk/old_files/stl_binary_format.htm
-
