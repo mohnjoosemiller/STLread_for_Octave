@@ -3,7 +3,7 @@ function [vertices, faces, color] = stlread(filename)
 % and faces which can be used by patch to view the stl.
 %
 % MATLAB code by Doron Harlev
-% Octave edits by John Moosemiller
+% Octave edits by John Moosemiller && @zmughal
 
 read_norm = 0; % whether we want to read the face normals
 
@@ -103,4 +103,4 @@ end% }}}
 
 fclose(fid);
 
-% For more information http://rpdrc.ic.polyu.edu.hk/old_files/stl_binary_format.htm
+% For more information on the stl binary format - http://rpdrc.ic.polyu.edu.hk/old_files/stl_binary_format.htm
