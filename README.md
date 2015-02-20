@@ -29,8 +29,9 @@ faster now. most STLs <40 MB should be quick.
 
 ## Future
 
-stlview() function should arrive soon. Will 
-have options for display characteristics. 
+stlview() function is being tested. 
+it may be incorporated into the stlread() 
+function, or become an independent function.
 
 
 
