@@ -19,7 +19,7 @@ Retrieving the vertices and faces is easy
 In order to plot these you might follow with
 
 ```matlab
-patch( 'Faces', faces, 'Vertices', verticies );
+patch( 'Faces', faces, 'Vertices', vertices );
 ```
 
 ## Limitations
