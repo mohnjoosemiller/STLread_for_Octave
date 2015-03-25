@@ -11,9 +11,9 @@ function [ ] = stlview(varargin)
 
 [vertices, faces] = stlread( varargin(1) );
 patch( 'Faces', faces, 'Vertices', vertices );
-if size(varargin) == 4
-    view([varargin(2) varargin(3) varargin(4));
-end
+%if size(varargin) == 4
+%    view([varargin(2) varargin(3) varargin(4));
+%end
 
 
 end
